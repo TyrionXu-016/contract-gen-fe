@@ -561,6 +561,91 @@
           </div>
         </div>
 
+        <div v-else-if="activeMenu === 'generator'" class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          <div class="xl:col-span-2 bg-white border border-gray-200 rounded-2xl shadow-sm flex flex-col">
+            <div class="p-6 border-b border-gray-100">
+              <h2 class="text-xl font-semibold text-gray-900">合同生成助手</h2>
+              <p class="text-sm text-gray-500 mt-1">输入业务需求，AI 将协助你生成合同初稿</p>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50/60">
+              <div v-for="message in generatorMessages" :key="message.id" class="flex">
+                <div
+                  :class="[
+                    'max-w-3xl rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm',
+                    message.role === 'user'
+                      ? 'ml-auto bg-indigo-600 text-white rounded-br-sm'
+                      : 'mr-auto bg-white text-gray-800 rounded-bl-sm border border-gray-100'
+                  ]"
+                >
+                  <p class="whitespace-pre-line">{{ message.content }}</p>
+                  <span class="block text-[11px] mt-2 opacity-70">{{ message.timestamp }}</span>
+                </div>
+              </div>
+              <div v-if="isGenerating" class="flex">
+                <div class="mr-auto bg-white border border-gray-100 rounded-2xl px-4 py-3 text-sm shadow-sm text-gray-500 flex items-center gap-2">
+                  <span class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></span>
+                  正在生成合同内容...
+                </div>
+              </div>
+            </div>
+            <div class="p-6 border-t border-gray-100 space-y-4">
+              <div class="flex flex-wrap gap-2">
+                <button
+                  v-for="suggestion in generatorSuggestions"
+                  :key="suggestion"
+                  class="text-sm px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200"
+                  @click="fillGeneratorInput(suggestion)"
+                >
+                  {{ suggestion }}
+                </button>
+              </div>
+              <div class="flex items-end gap-3">
+                <textarea
+                  v-model="generatorInput"
+                  rows="3"
+                  class="flex-1 border border-gray-300 rounded-2xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                  placeholder="例如：生成一份软件开发服务合同，甲方为杭州未来科技有限公司..."
+                  @keyup.enter.exact.prevent="sendGeneratorMessage"
+                ></textarea>
+                <button
+                  class="w-14 h-14 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-lg disabled:opacity-50"
+                  :disabled="!generatorInput.trim() || isGenerating"
+                  @click="sendGeneratorMessage"
+                >
+                  <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 space-y-6">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900">高频场景模版</h3>
+              <p class="text-sm text-gray-500 mt-1">选择一个业务场景快速开始</p>
+              <div class="mt-4 space-y-3">
+                <button
+                  v-for="template in generatorTemplates"
+                  :key="template.id"
+                  class="w-full text-left border border-gray-200 rounded-2xl px-4 py-3 hover:border-indigo-200 hover:bg-indigo-50"
+                  @click="fillGeneratorInput(template.prompt)"
+                >
+                  <p class="font-medium text-gray-900">{{ template.title }}</p>
+                  <p class="text-sm text-gray-500 mt-1">{{ template.description }}</p>
+                </button>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900">生成建议</h3>
+              <ul class="text-sm text-gray-600 space-y-2 mt-2 list-disc list-inside">
+                <li>越具体的合同要素，生成结果越精准</li>
+                <li>可附上适用法律、付款方式等关键条款</li>
+                <li>生成后可直接导入编辑器继续完善</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
         <div v-else class="bg-white border border-gray-200 rounded-2xl p-12 text-center shadow-sm">
           <div
             class="mx-auto w-16 h-16 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 mb-4"
@@ -911,6 +996,73 @@ const recentActivities = ref([
     iconBg: 'bg-yellow-500',
   },
 ])
+
+const generatorMessages = ref([
+  {
+    id: 'm1',
+    role: 'assistant',
+    content: '你好，我是智能合同助手。告诉我业务场景，我可以帮你起草合同框架。',
+    timestamp: '刚刚',
+  },
+])
+const generatorInput = ref('')
+const isGenerating = ref(false)
+const generatorSuggestions = ref([
+  '生成一份 SaaS 软件服务合同需要哪些条款？',
+  '跨境电商代运营合同应该包含哪些付款节点？',
+  '写一份人力外包服务协议',
+])
+const generatorTemplates = ref([
+  {
+    id: 'tpl1',
+    title: '软件开发服务合同',
+    description: '明确交付物、里程碑与验收方式',
+    prompt:
+      '请为甲方“云杉科技有限公司”与乙方“星融信息技术有限公司”生成一份软件开发服务合同，包含项目范围、里程碑、验收、保密与知识产权归属等条款。',
+  },
+  {
+    id: 'tpl2',
+    title: '供应链采购合同',
+    description: '适用于年框采购合作',
+    prompt:
+      '我需要一份年框采购合同，甲方为“凌峰零售集团”，乙方为“恒昌供应链管理有限公司”，包含价格调整机制、交付、质检与违约责任。',
+  },
+  {
+    id: 'tpl3',
+    title: '数据处理委托协议',
+    description: '满足数据合规要求',
+    prompt:
+      '生成一份数据处理委托协议，甲方委托乙方处理 EU 用户数据，需要符合 GDPR / PIPL 要求，列出双方责任与安全措施。',
+  },
+])
+
+const fillGeneratorInput = (text) => {
+  generatorInput.value = text
+}
+
+const sendGeneratorMessage = () => {
+  if (!generatorInput.value.trim() || isGenerating.value) return
+  const message = {
+    id: `u-${Date.now()}`,
+    role: 'user',
+    content: generatorInput.value.trim(),
+    timestamp: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
+  }
+  generatorMessages.value.push(message)
+  generatorInput.value = ''
+  isGenerating.value = true
+
+  setTimeout(() => {
+    generatorMessages.value.push({
+      id: `a-${Date.now()}`,
+      role: 'assistant',
+      content:
+        '好的，我已根据你的需求梳理了合同结构，包括：1) 双方主体信息 2) 服务范围 3) 里程碑与交付 4) 费用和付款计划 5) 保密与知识产权 6) 违约责任。稍后可将内容导入编辑器进一步完善。',
+      timestamp: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
+    })
+    isGenerating.value = false
+  }, 1500)
+}
 
 watch(activeTab, () => {
   currentPage.value = 1
