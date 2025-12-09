@@ -288,7 +288,8 @@
     <!-- 页面底部信息 -->
     <div class="page-footer">
       <p>
-        © 2025 智能文档编辑器 · 探索无限创作可能 · <a href="#" class="footer-link">隐私政策</a> ·
+        © 2025 合同模版智能生成系统· 探索无限创作可能 ·
+        <a href="#" class="footer-link">隐私政策</a> ·
         <a href="#" class="footer-link">服务条款</a>
       </p>
     </div>
