@@ -48,15 +48,6 @@
             <h1 class="text-2xl font-bold text-gray-900">智能文档控制台</h1>
             <p class="text-gray-500 mt-1" v-if="activeMenuItem.description">{{ activeMenuItem.description }}</p>
           </div>
-          <button class="flex items-center gap-3 bg-white border border-gray-200 rounded-full px-4 py-2 shadow-sm hover:shadow transition">
-            <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-semibold">
-              {{ userInitial }}
-            </div>
-            <div class="text-left hidden sm:block">
-              <p class="text-sm font-semibold text-gray-900">{{ authStore.user?.username || '用户' }}</p>
-              <p class="text-xs text-gray-500">{{ authStore.user?.email || '未绑定邮箱' }}</p>
-            </div>
-          </button>
         </div>
 
         <div v-if="activeMenu === 'home'" class="space-y-8">
