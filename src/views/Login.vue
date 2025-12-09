@@ -36,7 +36,7 @@
           </svg>
         </div>
         <div class="brand-content">
-          <h1 class="brand-title">智能文档编辑器</h1>
+          <h1 class="brand-title">合同模版智能生成系统器</h1>
           <p class="brand-subtitle">安全 · 高效 · 智能</p>
           <div class="brand-features">
             <div class="feature-item">
@@ -288,7 +288,7 @@
     <!-- 页面底部信息 -->
     <div class="page-footer">
       <p>
-        © 2024 智能文档编辑器 · 探索无限创作可能 · <a href="#" class="footer-link">隐私政策</a> ·
+        © 2025 智能文档编辑器 · 探索无限创作可能 · <a href="#" class="footer-link">隐私政策</a> ·
         <a href="#" class="footer-link">服务条款</a>
       </p>
     </div>

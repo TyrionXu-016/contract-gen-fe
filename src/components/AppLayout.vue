@@ -9,12 +9,12 @@
     <!-- 可选：页脚 -->
     <footer class="border-t border-gray-200 mt-12 py-6">
       <div class="container mx-auto px-4 text-center text-gray-600 text-sm">
-        <p>© 2023 文档编辑器. 使用 Vue 3 + Django 构建.</p>
+        <p>© 2025 合同模版智能生成系统. MSE 项目管理课程(四朵花小组).</p>
       </div>
     </footer>
   </div>
 </template>
 
 <script setup>
-import Navbar from './Navbar.vue';
+import Navbar from './Navbar.vue'
 </script>

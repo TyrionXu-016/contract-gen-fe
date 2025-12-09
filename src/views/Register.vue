@@ -62,7 +62,12 @@
             <div class="input-group">
               <label for="username" class="input-label">用户名</label>
               <div class="input-wrapper">
-                <svg class="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  class="input-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5" />
                   <path
                     d="M6 21V19C6 16.7909 7.79086 15 10 15H14C16.2091 15 18 16.7909 18 19V21"
@@ -87,7 +92,12 @@
             <div class="input-group">
               <label for="email" class="input-label">邮箱地址</label>
               <div class="input-wrapper">
-                <svg class="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  class="input-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     d="M3 8L10.89 3.74C11.58 3.35 12.42 3.35 13.11 3.74L21 8M5 19H19C20.1046 19 21 18.1046 21 17V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V17C3 18.1046 3.89543 19 5 19Z"
                     stroke="currentColor"
@@ -115,8 +125,21 @@
           <div class="input-group">
             <label for="password" class="input-label">密码</label>
             <div class="input-wrapper">
-              <svg class="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="3" y="10" width="18" height="12" rx="3" stroke="currentColor" stroke-width="1.5" />
+              <svg
+                class="input-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  x="3"
+                  y="10"
+                  width="18"
+                  height="12"
+                  rx="3"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
                 <path
                   d="M7 10V6C7 3.79086 8.79086 2 11 2H13C15.2091 2 17 3.79086 17 6V10"
                   stroke="currentColor"
@@ -141,7 +164,12 @@
                 @click="togglePasswordVisibility('primary')"
                 :aria-label="showPassword ? '隐藏密码' : '显示密码'"
               >
-                <svg class="eye-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  class="eye-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     v-if="showPassword"
                     d="M3 12C3 12 6.27273 5 12 5C17.7273 5 21 12 21 12C21 12 17.7273 19 12 19C6.27273 19 3 12 3 12Z"
@@ -184,7 +212,12 @@
           <div class="input-group">
             <label for="confirmPassword" class="input-label">确认密码</label>
             <div class="input-wrapper">
-              <svg class="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                class="input-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <path
                   d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
                   stroke="currentColor"
@@ -210,7 +243,12 @@
                 @click="togglePasswordVisibility('confirm')"
                 :aria-label="showConfirmPassword ? '隐藏密码' : '显示密码'"
               >
-                <svg class="eye-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  class="eye-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     v-if="showConfirmPassword"
                     d="M3 12C3 12 6.27273 5 12 5C17.7273 5 21 12 21 12C21 12 17.7273 19 12 19C6.27273 19 3 12 3 12Z"
@@ -261,7 +299,12 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
               />
-              <path d="M12 16H12.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              <path
+                d="M12 16H12.01"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
               <path
                 d="M10.29 3.85998L1.82002 18C1.42332 18.6868 1.69546 19.5667 2.3823 19.9634C2.60303 20.0926 2.85083 20.1613 3.10494 20.1613H20.8951C21.6649 20.1613 22.2951 19.5311 22.2951 18.7613C22.2951 18.5072 22.2264 18.2594 22.0972 18.0386L13.63 3.89862C13.2308 3.21724 12.3458 2.98518 11.6644 3.38438C11.4909 3.48561 11.3341 3.62221 11.2024 3.78702"
                 stroke="currentColor"
@@ -276,7 +319,14 @@
           <button type="submit" class="primary-button" :disabled="loading">
             <span class="button-text">{{ loading ? '创建账户中...' : '立即注册' }}</span>
             <svg v-if="loading" class="loading-spinner" viewBox="0 0 50 50">
-              <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="4"></circle>
+              <circle
+                cx="25"
+                cy="25"
+                r="20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
             </svg>
           </button>
 
@@ -292,7 +342,7 @@
 
     <div class="page-footer">
       <p>
-        © 2024 智能文档编辑器 · 创作、协作与审批一站式完成 ·
+        © 2025 合同模版智能生成器 · 创作与协作一站式完成 ·
         <a href="#" class="footer-link">隐私政策</a>
         ·
         <a href="#" class="footer-link">服务条款</a>
@@ -434,16 +484,8 @@ const handleRegister = async () => {
   position: relative;
   overflow: hidden;
   font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    'PingFang SC',
-    'Hiragino Sans GB',
-    'Microsoft YaHei',
-    sans-serif;
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   color: #e2e8f0;
   padding: 2rem;
 }
@@ -460,7 +502,14 @@ const handleRegister = async () => {
 .gradient-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #475569 75%, #64748b 100%);
+  background: linear-gradient(
+    135deg,
+    #0f172a 0%,
+    #1e293b 25%,
+    #334155 50%,
+    #475569 75%,
+    #64748b 100%
+  );
   background-size: 400% 400%;
   animation: gradientShift 20s ease infinite;
 }
