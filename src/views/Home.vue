@@ -614,12 +614,12 @@ const isSidebarCollapsed = ref(false)
 const activeMenu = ref('home')
 const menuItems = ref([
   { id: 'home', label: '首页', description: '查看核心概览与快捷操作', icon: DocumentIcon },
+  { id: 'generator', label: '合同生成器', description: '生成合同模版', icon: ClockIcon },
   { id: 'documents', label: '文档管理', description: '集中管理所有合同文档', icon: FolderIcon },
-  { id: 'generator', label: '合同生成器', description: '监控整体写作效率', icon: ClockIcon },
-  { id: 'supervisor', label: '法规检测器', description: '快速访问收藏内容', icon: StarIcon },
-  { id: 'time_machine', label: '合同时光机', description: '恢复或清理删除的文档', icon: TrashIcon },
-  { id: 'roles', label: '角色管理', description: '恢复或清理删除的文档', icon: TrashIcon },
-  { id: 'authorities', label: '权限管理', description: '恢复或清理删除的文档', icon: TrashIcon },
+  { id: 'supervisor', label: '法规检测器', description: '爬虫检查法规', icon: StarIcon },
+  { id: 'time_machine', label: '合同时光机', description: '合同版本管理', icon: TrashIcon },
+  { id: 'roles', label: '角色管理', description: '管理用户角色', icon: TrashIcon },
+  { id: 'authorities', label: '权限管理', description: '管理用户权限', icon: TrashIcon },
 ])
 const activeMenuItem = computed(
   () => menuItems.value.find((item) => item.id === activeMenu.value) || menuItems.value[0],
