@@ -56,10 +56,7 @@
         <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div>
             <p class="text-sm text-gray-500">当前模块 · {{ activeMenuItem.label }}</p>
-            <h1 class="text-2xl font-bold text-gray-900">智能文档控制台</h1>
-            <p class="text-gray-500 mt-1" v-if="activeMenuItem.description">
-              {{ activeMenuItem.description }}
-            </p>
+            <h1 class="text-2xl font-bold text-gray-900">{{ activeMenuItem.description }}</h1>
           </div>
         </div>
 
@@ -562,7 +559,9 @@
         </div>
 
         <div v-else-if="activeMenu === 'generator'" class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          <div class="xl:col-span-2 bg-white border border-gray-200 rounded-2xl shadow-sm flex flex-col">
+          <div
+            class="xl:col-span-2 bg-white border border-gray-200 rounded-2xl shadow-sm flex flex-col"
+          >
             <div class="p-6 border-b border-gray-100">
               <h2 class="text-xl font-semibold text-gray-900">合同生成助手</h2>
               <p class="text-sm text-gray-500 mt-1">输入业务需求，AI 将协助你生成合同初稿</p>
@@ -574,7 +573,7 @@
                     'max-w-3xl rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm',
                     message.role === 'user'
                       ? 'ml-auto bg-indigo-600 text-white rounded-br-sm'
-                      : 'mr-auto bg-white text-gray-800 rounded-bl-sm border border-gray-100'
+                      : 'mr-auto bg-white text-gray-800 rounded-bl-sm border border-gray-100',
                   ]"
                 >
                   <p class="whitespace-pre-line">{{ message.content }}</p>
@@ -582,7 +581,9 @@
                 </div>
               </div>
               <div v-if="isGenerating" class="flex">
-                <div class="mr-auto bg-white border border-gray-100 rounded-2xl px-4 py-3 text-sm shadow-sm text-gray-500 flex items-center gap-2">
+                <div
+                  class="mr-auto bg-white border border-gray-100 rounded-2xl px-4 py-3 text-sm shadow-sm text-gray-500 flex items-center gap-2"
+                >
                   <span class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></span>
                   正在生成合同内容...
                 </div>
@@ -613,7 +614,12 @@
                   @click="sendGeneratorMessage"
                 >
                   <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 12h14M12 5l7 7-7 7"
+                    />
                   </svg>
                 </button>
               </div>
