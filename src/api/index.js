@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // 创建axios实例
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api', // Django后端地址
+  baseURL: '/api',
   timeout: 10000,
 });
 
@@ -35,7 +35,7 @@ api.interceptors.response.use(
         // 尝试刷新token
         const refreshToken = localStorage.getItem('refresh_token');
         if (refreshToken) {
-          const response = await axios.post('http://127.0.0.1:8000/api/token/refresh/', {
+          const response = await axios.post('/api/token/refresh/', {
             refresh: refreshToken
           });
 
