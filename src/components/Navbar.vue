@@ -22,33 +22,6 @@
               >合同模版智能生成系统</span
             >
           </router-link>
-
-          <!-- 导航链接 -->
-          <!-- 在 Navbar.vue 中更新导航链接 -->
-          <div class="hidden md:flex space-x-4">
-            <router-link
-              to="/"
-              class="px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              :class="
-                currentRoute === '/'
-                  ? 'text-indigo-600 bg-indigo-50'
-                  : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50'
-              "
-            >
-              首页
-            </router-link>
-            <router-link
-              to="/documents"
-              class="px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              :class="
-                currentRoute === '/documents'
-                  ? 'text-indigo-600 bg-indigo-50'
-                  : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50'
-              "
-            >
-              文档列表
-            </router-link>
-          </div>
         </div>
 
         <!-- 右侧：用户信息和操作 -->
