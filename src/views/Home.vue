@@ -604,7 +604,7 @@
                 <textarea
                   v-model="generatorInput"
                   rows="3"
-                  class="flex-1 border border-gray-300 rounded-2xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                  class="flex-1 border border-gray-300 rounded-2xl px-4 py-3 text-gray-900 placeholder:text-gray-500 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
                   placeholder="例如：生成一份软件开发服务合同，甲方为杭州未来科技有限公司..."
                   @keyup.enter.exact.prevent="sendGeneratorMessage"
                 ></textarea>
