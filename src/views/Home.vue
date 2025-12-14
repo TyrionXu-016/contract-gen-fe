@@ -566,7 +566,121 @@
               <h2 class="text-xl font-semibold text-gray-900">合同生成助手</h2>
               <p class="text-sm text-gray-500 mt-1">输入业务需求，AI 将协助你生成合同初稿</p>
             </div>
+            <div class="p-6 border-b border-gray-100 bg-gray-50 space-y-4">
+              <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-900">开始前先回答 3 个问题</h3>
+                  <p class="text-sm text-gray-500 mt-1">越充分的背景信息，越能匹配精准的合同结构</p>
+                </div>
+                <button
+                  v-if="hasConfirmedPreChat"
+                  class="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                  @click="resetPreChatAnswers"
+                >
+                  重新填写
+                </button>
+              </div>
+              <div class="grid gap-4 md:grid-cols-3">
+                <label class="flex flex-col gap-2">
+                  <span class="text-sm font-medium text-gray-700">合同类型</span>
+                  <select
+                    v-model="preChatAnswers.contractType"
+                    class="border border-gray-300 rounded-xl px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  >
+                    <option value="" disabled>请选择合同类型</option>
+                    <option
+                      v-for="option in contractTypeOptions"
+                      :key="option.value"
+                      :value="option.value"
+                    >
+                      {{ option.label }}
+                    </option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-2">
+                  <span class="text-sm font-medium text-gray-700">所在地区</span>
+                  <select
+                    v-model="preChatAnswers.region"
+                    class="border border-gray-300 rounded-xl px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  >
+                    <option value="" disabled>请选择地区</option>
+                    <option v-for="option in regionOptions" :key="option.value" :value="option.value">
+                      {{ option.label }}
+                    </option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-2">
+                  <span class="text-sm font-medium text-gray-700">产业类型</span>
+                  <select
+                    v-model="preChatAnswers.industry"
+                    class="border border-gray-300 rounded-xl px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  >
+                    <option value="" disabled>请选择产业类型</option>
+                    <option
+                      v-for="option in industryOptions"
+                      :key="option.value"
+                      :value="option.value"
+                    >
+                      {{ option.label }}
+                    </option>
+                  </select>
+                </label>
+              </div>
+              <div
+                class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between border-t border-gray-200 pt-4"
+              >
+                <p
+                  class="text-sm"
+                  :class="[
+                    preChatTouched && !isPreChatComplete
+                      ? 'text-red-600'
+                      : hasConfirmedPreChat
+                      ? 'text-green-600'
+                      : 'text-gray-500',
+                  ]"
+                >
+                  <span v-if="preChatTouched && !isPreChatComplete">请先填写完整三个问题</span>
+                  <span v-else-if="hasConfirmedPreChat">信息已确认，可以开始对话</span>
+                  <span v-else>填写完成后点击“开始对话”即可进入聊天</span>
+                </p>
+                <button
+                  class="px-5 py-2 rounded-xl text-sm font-medium transition-colors"
+                  :class="[
+                    isPreChatComplete
+                      ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                      : 'bg-gray-200 text-gray-500 cursor-not-allowed',
+                  ]"
+                  :disabled="!isPreChatComplete"
+                  @click="confirmPreChatAnswers"
+                >
+                  {{ hasConfirmedPreChat ? '更新并继续' : '开始对话' }}
+                </button>
+              </div>
+            </div>
             <div class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50/60">
+              <div
+                v-if="hasConfirmedPreChat"
+                class="flex flex-wrap gap-2 text-xs text-gray-600"
+              >
+                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white border border-indigo-100 text-indigo-700">
+                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  {{ preChatAnswers.contractType }}
+                </span>
+                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white border border-indigo-100 text-indigo-700">
+                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  {{ preChatAnswers.region }}
+                </span>
+                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white border border-indigo-100 text-indigo-700">
+                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  {{ preChatAnswers.industry }}
+                </span>
+              </div>
               <div v-for="message in generatorMessages" :key="message.id" class="flex">
                 <div
                   :class="[
@@ -605,12 +719,12 @@
                   v-model="generatorInput"
                   rows="3"
                   class="flex-1 border border-gray-300 rounded-2xl px-4 py-3 text-gray-900 placeholder:text-gray-500 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
-                  placeholder="例如：生成一份软件开发服务合同，甲方为杭州未来科技有限公司..."
+                  :placeholder="generatorPlaceholder"
                   @keyup.enter.exact.prevent="sendGeneratorMessage"
                 ></textarea>
                 <button
                   class="w-14 h-14 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-lg disabled:opacity-50"
-                  :disabled="!generatorInput.trim() || isGenerating"
+                  :disabled="!generatorInput.trim() || isGenerating || !hasConfirmedPreChat"
                   @click="sendGeneratorMessage"
                 >
                   <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -667,7 +781,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import AppLayout from '@/components/AppLayout.vue'
@@ -1042,11 +1156,67 @@ const generatorTemplates = ref([
   },
 ])
 
+const contractTypeOptions = [
+  { label: '软件开发服务合同', value: '软件开发服务合同' },
+  { label: '供应链采购合同', value: '供应链采购合同' },
+  { label: '数据处理委托协议', value: '数据处理委托协议' },
+  { label: '人力外包服务合同', value: '人力外包服务合同' },
+]
+
+const regionOptions = [
+  { label: '华北地区', value: '华北地区' },
+  { label: '华东地区', value: '华东地区' },
+  { label: '华南地区', value: '华南地区' },
+  { label: '海外市场', value: '海外市场' },
+]
+
+const industryOptions = [
+  { label: '互联网/软件', value: '互联网/软件' },
+  { label: '供应链/零售', value: '供应链/零售' },
+  { label: '制造/工业', value: '制造/工业' },
+  { label: '生命科学/医疗', value: '生命科学/医疗' },
+]
+
+const preChatAnswers = reactive({
+  contractType: '',
+  region: '',
+  industry: '',
+})
+
+const hasConfirmedPreChat = ref(false)
+const preChatTouched = ref(false)
+
+const isPreChatComplete = computed(() => {
+  return Boolean(preChatAnswers.contractType && preChatAnswers.region && preChatAnswers.industry)
+})
+
+const generatorPlaceholder = computed(() => {
+  if (!hasConfirmedPreChat.value) {
+    return '请先完成上方的合同类型、地区与产业信息，以便获取更精准的合同建议'
+  }
+  return `请描述${preChatAnswers.region}地区${preChatAnswers.industry}场景下的${preChatAnswers.contractType}业务需求...`
+})
+
+const confirmPreChatAnswers = () => {
+  preChatTouched.value = true
+  if (!isPreChatComplete.value) return
+  hasConfirmedPreChat.value = true
+}
+
+const resetPreChatAnswers = () => {
+  hasConfirmedPreChat.value = false
+  preChatTouched.value = false
+}
+
 const fillGeneratorInput = (text) => {
   generatorInput.value = text
 }
 
 const sendGeneratorMessage = () => {
+  if (!hasConfirmedPreChat.value) {
+    preChatTouched.value = true
+    return
+  }
   if (!generatorInput.value.trim() || isGenerating.value) return
   const message = {
     id: `u-${Date.now()}`,
@@ -1069,6 +1239,16 @@ const sendGeneratorMessage = () => {
     isGenerating.value = false
   }, 1500)
 }
+
+watch(
+  () => [preChatAnswers.contractType, preChatAnswers.region, preChatAnswers.industry],
+  () => {
+    if (hasConfirmedPreChat.value) {
+      hasConfirmedPreChat.value = false
+      preChatTouched.value = false
+    }
+  },
+)
 
 watch(activeTab, () => {
   currentPage.value = 1
