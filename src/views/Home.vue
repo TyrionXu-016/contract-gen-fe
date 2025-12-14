@@ -787,6 +787,10 @@ import { useAuthStore } from '@/stores/auth'
 import AppLayout from '@/components/AppLayout.vue'
 import api from '@/api'
 
+defineOptions({
+  name: 'HomeView',
+})
+
 const DocumentIcon = {
   template:
     '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>',
@@ -828,9 +832,6 @@ const menuItems = ref([
 ])
 const activeMenuItem = computed(
   () => menuItems.value.find((item) => item.id === activeMenu.value) || menuItems.value[0],
-)
-const userInitial = computed(() =>
-  authStore.user?.username ? authStore.user.username.charAt(0).toUpperCase() : 'U',
 )
 
 const loading = ref(true)
@@ -1117,14 +1118,10 @@ const recentActivities = ref([
   },
 ])
 
-const generatorMessages = ref([
-  {
-    id: 'm1',
-    role: 'assistant',
-    content: '你好，我是智能合同助手。告诉我业务场景，我可以帮你起草合同框架。',
-    timestamp: '刚刚',
-  },
-])
+const initialAssistantGreeting =
+  '你好，我是智能合同助手。告诉我业务场景，我可以帮你起草合同框架。'
+
+const generatorMessages = ref([])
 const generatorInput = ref('')
 const isGenerating = ref(false)
 const generatorSuggestions = ref([
@@ -1185,6 +1182,7 @@ const preChatAnswers = reactive({
 
 const hasConfirmedPreChat = ref(false)
 const preChatTouched = ref(false)
+const hasInjectedInitialMessage = ref(false)
 
 const isPreChatComplete = computed(() => {
   return Boolean(preChatAnswers.contractType && preChatAnswers.region && preChatAnswers.industry)
@@ -1201,11 +1199,22 @@ const confirmPreChatAnswers = () => {
   preChatTouched.value = true
   if (!isPreChatComplete.value) return
   hasConfirmedPreChat.value = true
+  if (!hasInjectedInitialMessage.value) {
+    generatorMessages.value.push({
+      id: `a-init-${Date.now()}`,
+      role: 'assistant',
+      content: initialAssistantGreeting,
+      timestamp: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
+    })
+    hasInjectedInitialMessage.value = true
+  }
 }
 
 const resetPreChatAnswers = () => {
   hasConfirmedPreChat.value = false
   preChatTouched.value = false
+  hasInjectedInitialMessage.value = false
+  generatorMessages.value = []
 }
 
 const fillGeneratorInput = (text) => {
