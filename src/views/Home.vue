@@ -604,7 +604,11 @@
                     class="border border-gray-300 rounded-xl px-3 py-2 text-sm text-gray-900 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   >
                     <option value="" disabled>请选择地区</option>
-                    <option v-for="option in regionOptions" :key="option.value" :value="option.value">
+                    <option
+                      v-for="option in regionOptions"
+                      :key="option.value"
+                      :value="option.value"
+                    >
                       {{ option.label }}
                     </option>
                   </select>
@@ -635,8 +639,8 @@
                     preChatTouched && !isPreChatComplete
                       ? 'text-red-600'
                       : hasConfirmedPreChat
-                      ? 'text-green-600'
-                      : 'text-gray-500',
+                        ? 'text-green-600'
+                        : 'text-gray-500',
                   ]"
                 >
                   <span v-if="preChatTouched && !isPreChatComplete">请先填写完整三个问题</span>
@@ -658,25 +662,43 @@
               </div>
             </div>
             <div class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50/60">
-              <div
-                v-if="hasConfirmedPreChat"
-                class="flex flex-wrap gap-2 text-xs text-gray-600"
-              >
-                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white border border-indigo-100 text-indigo-700">
+              <div v-if="hasConfirmedPreChat" class="flex flex-wrap gap-2 text-xs text-gray-600">
+                <span
+                  class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white border border-indigo-100 text-indigo-700"
+                >
                   <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                   {{ preChatAnswers.contractType }}
                 </span>
-                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white border border-indigo-100 text-indigo-700">
+                <span
+                  class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white border border-indigo-100 text-indigo-700"
+                >
                   <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                   {{ preChatAnswers.region }}
                 </span>
-                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white border border-indigo-100 text-indigo-700">
+                <span
+                  class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-white border border-indigo-100 text-indigo-700"
+                >
                   <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                   {{ preChatAnswers.industry }}
                 </span>
@@ -1118,8 +1140,7 @@ const recentActivities = ref([
   },
 ])
 
-const initialAssistantGreeting =
-  '你好，我是智能合同助手。告诉我业务场景，我可以帮你起草合同框架。'
+const initialAssistantGreeting = '你好，我是智能合同助手。告诉我业务场景，我可以帮你起草合同框架。'
 
 const generatorMessages = ref([])
 const generatorInput = ref('')
@@ -1153,6 +1174,17 @@ const generatorTemplates = ref([
   },
 ])
 
+const contractGeneratorEndpoint = 'http://127.0.0.1/api/contract/generate/'
+const contractGenerationDefaults = {
+  first_party: '甲方科技有限公司',
+  second_party: '乙方信息技术有限公司',
+  cooperation_purpose: '完成合作',
+  Core_scenario: '按里程碑验收并分期付款',
+  max_new_tokens: 2000,
+  temperature: 0.6,
+  use_new_knowledge_base: true,
+}
+
 const contractTypeOptions = [
   { label: '软件开发服务合同', value: '软件开发服务合同' },
   { label: '供应链采购合同', value: '供应链采购合同' },
@@ -1179,6 +1211,10 @@ const preChatAnswers = reactive({
   region: '',
   industry: '',
 })
+
+const buildGeneratorPrompt = (userText) => {
+  return [preChatAnswers.region, preChatAnswers.industry, userText].filter(Boolean).join(' · ')
+}
 
 const hasConfirmedPreChat = ref(false)
 const preChatTouched = ref(false)
@@ -1221,32 +1257,116 @@ const fillGeneratorInput = (text) => {
   generatorInput.value = text
 }
 
-const sendGeneratorMessage = () => {
+const sendGeneratorMessage = async () => {
   if (!hasConfirmedPreChat.value) {
     preChatTouched.value = true
     return
   }
-  if (!generatorInput.value.trim() || isGenerating.value) return
-  const message = {
+  const trimmedInput = generatorInput.value.trim()
+  if (!trimmedInput || isGenerating.value) return
+
+  const userMessage = {
     id: `u-${Date.now()}`,
     role: 'user',
-    content: generatorInput.value.trim(),
+    content: trimmedInput,
     timestamp: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
   }
-  generatorMessages.value.push(message)
+  generatorMessages.value.push(userMessage)
   generatorInput.value = ''
+
+  const assistantMessage = {
+    id: `a-${Date.now()}`,
+    role: 'assistant',
+    content: '',
+    timestamp: '',
+  }
+  generatorMessages.value.push(assistantMessage)
+
   isGenerating.value = true
 
-  setTimeout(() => {
-    generatorMessages.value.push({
-      id: `a-${Date.now()}`,
-      role: 'assistant',
-      content:
-        '好的，我已根据你的需求梳理了合同结构，包括：1) 双方主体信息 2) 服务范围 3) 里程碑与交付 4) 费用和付款计划 5) 保密与知识产权 6) 违约责任。稍后可将内容导入编辑器进一步完善。',
-      timestamp: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
+  const payload = {
+    prompt: buildGeneratorPrompt(trimmedInput),
+    contract_type: preChatAnswers.contractType,
+    ...contractGenerationDefaults,
+  }
+
+  const setAssistantTimestamp = () => {
+    assistantMessage.timestamp = new Date().toLocaleTimeString('zh-CN', {
+      hour: '2-digit',
+      minute: '2-digit',
     })
+  }
+
+  const processSegment = (segment) => {
+    const line = segment.trim()
+    if (!line || line === 'data:' || line === 'data: [DONE]') return
+    if (!line.startsWith('data:')) return
+    const jsonString = line.replace(/^data:\s*/, '')
+    if (!jsonString) return
+
+    try {
+      const chunk = JSON.parse(jsonString)
+      if (chunk.done) {
+        setAssistantTimestamp()
+        return
+      }
+      if (chunk.content) {
+        assistantMessage.content += chunk.content
+      }
+    } catch (error) {
+      console.error('解析生成内容失败:', error, line)
+    }
+  }
+
+  try {
+    const response = await fetch(contractGeneratorEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+
+    if (!response.ok) {
+      throw new Error(`生成接口返回 ${response.status}`)
+    }
+
+    if (!response.body) {
+      const fallbackData = await response.json().catch(() => null)
+      assistantMessage.content = fallbackData?.content || '生成完成，但未收到内容，请稍后重试。'
+      setAssistantTimestamp()
+      return
+    }
+
+    const reader = response.body.getReader()
+    const decoder = new TextDecoder('utf-8')
+    let buffer = ''
+
+    while (true) {
+      const { value, done } = await reader.read()
+      if (done) break
+      buffer += decoder.decode(value, { stream: true })
+      const segments = buffer.split('\n\n')
+      buffer = segments.pop() || ''
+      segments.forEach((segment) => processSegment(segment))
+    }
+
+    buffer += decoder.decode()
+    if (buffer.trim()) {
+      processSegment(buffer)
+    }
+
+    if (!assistantMessage.timestamp) {
+      setAssistantTimestamp()
+    }
+    if (!assistantMessage.content) {
+      assistantMessage.content = '生成完成，但未收到内容，请稍后重试。'
+    }
+  } catch (error) {
+    console.error('生成合同失败:', error)
+    assistantMessage.content = '生成失败，请稍后重试。若问题持续，请联系管理员。'
+    setAssistantTimestamp()
+  } finally {
     isGenerating.value = false
-  }, 1500)
+  }
 }
 
 watch(
