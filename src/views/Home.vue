@@ -1174,7 +1174,7 @@ const generatorTemplates = ref([
   },
 ])
 
-const contractGeneratorEndpoint = 'http://127.0.0.1/api/contract/generate/'
+const contractGeneratorEndpoint = '/contract/generate/'
 const contractGenerationDefaults = {
   first_party: '甲方科技有限公司',
   second_party: '乙方信息技术有限公司',
@@ -1318,47 +1318,46 @@ const sendGeneratorMessage = async () => {
     }
   }
 
+  let streamBuffer = ''
+  let previousTextLength = 0
+
+  const flushRemainingBuffer = () => {
+    if (streamBuffer.trim()) {
+      processSegment(streamBuffer)
+      streamBuffer = ''
+    }
+  }
+
   try {
-    const response = await fetch(contractGeneratorEndpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+    const response = await api.post(contractGeneratorEndpoint, payload, {
+      responseType: 'text',
+      onDownloadProgress: (progressEvent) => {
+        const target =
+          progressEvent?.event?.currentTarget ||
+          progressEvent?.event?.target ||
+          progressEvent?.target
+        const responseText = target?.responseText || ''
+        if (!responseText) return
+        const chunk = responseText.slice(previousTextLength)
+        if (!chunk) return
+        previousTextLength = responseText.length
+        const combined = streamBuffer + chunk
+        const segments = combined.split('\n\n')
+        streamBuffer = segments.pop() || ''
+        segments.forEach((segment) => processSegment(segment))
+      },
     })
 
-    if (!response.ok) {
-      throw new Error(`生成接口返回 ${response.status}`)
-    }
-
-    if (!response.body) {
-      const fallbackData = await response.json().catch(() => null)
-      assistantMessage.content = fallbackData?.content || '生成完成，但未收到内容，请稍后重试。'
-      setAssistantTimestamp()
-      return
-    }
-
-    const reader = response.body.getReader()
-    const decoder = new TextDecoder('utf-8')
-    let buffer = ''
-
-    while (true) {
-      const { value, done } = await reader.read()
-      if (done) break
-      buffer += decoder.decode(value, { stream: true })
-      const segments = buffer.split('\n\n')
-      buffer = segments.pop() || ''
-      segments.forEach((segment) => processSegment(segment))
-    }
-
-    buffer += decoder.decode()
-    if (buffer.trim()) {
-      processSegment(buffer)
-    }
+    flushRemainingBuffer()
 
     if (!assistantMessage.timestamp) {
       setAssistantTimestamp()
     }
+
     if (!assistantMessage.content) {
-      assistantMessage.content = '生成完成，但未收到内容，请稍后重试。'
+      const fallbackContent =
+        typeof response?.data === 'string' ? response.data : response?.data?.content
+      assistantMessage.content = fallbackContent || '生成完成，但未收到内容，请稍后重试。'
     }
   } catch (error) {
     console.error('生成合同失败:', error)
