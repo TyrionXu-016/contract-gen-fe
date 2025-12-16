@@ -585,7 +585,7 @@
                   <span class="text-sm font-medium text-gray-700">合同类型</span>
                   <select
                     v-model="preChatAnswers.contractType"
-                    class="border border-gray-300 rounded-xl px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    class="border border-gray-300 rounded-xl px-3 py-2 text-sm text-gray-900 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   >
                     <option value="" disabled>请选择合同类型</option>
                     <option
@@ -601,7 +601,7 @@
                   <span class="text-sm font-medium text-gray-700">所在地区</span>
                   <select
                     v-model="preChatAnswers.region"
-                    class="border border-gray-300 rounded-xl px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    class="border border-gray-300 rounded-xl px-3 py-2 text-sm text-gray-900 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   >
                     <option value="" disabled>请选择地区</option>
                     <option v-for="option in regionOptions" :key="option.value" :value="option.value">
@@ -613,7 +613,7 @@
                   <span class="text-sm font-medium text-gray-700">产业类型</span>
                   <select
                     v-model="preChatAnswers.industry"
-                    class="border border-gray-300 rounded-xl px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    class="border border-gray-300 rounded-xl px-3 py-2 text-sm text-gray-900 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   >
                     <option value="" disabled>请选择产业类型</option>
                     <option
