@@ -1331,6 +1331,7 @@ const sendGeneratorMessage = async () => {
   try {
     const response = await api.post(contractGeneratorEndpoint, payload, {
       responseType: 'text',
+      timeout: 300000,
       onDownloadProgress: (progressEvent) => {
         const target =
           progressEvent?.event?.currentTarget ||
